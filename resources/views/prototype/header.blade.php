@@ -22,7 +22,8 @@
     </a>
     <div class="p-nav clearfix">
         <div class="memu"><a class="{{ isset($category) && $category  == 'new-m2o' ? 'selected' : '' }}" href="/prototype/new-m2o">M2O-NEW系列</a></div>
-        <div class="memu"><a class="{{isset($category) &&  $category == 'mxu' ? 'selected': '' }}" href="/prototype/mxu">MXU系列</a></div>
+        <div class="memu"><a class="{{isset($category) &&  $category == 'mxu' ? 'selected': '' }}" href="/prototype/mxu">MXU-1.2系列</a></div>
+        <div class="memu"><a class="{{isset($category) &&  $category == 'new-mxu' ? 'selected': '' }}" href="/prototype/new-mxu">MXU-1.3系列</a></div>
     </div>
 </div>
 @yield('content')

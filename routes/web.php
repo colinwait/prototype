@@ -27,7 +27,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 //Route::get('comic/download','ComicController@download');
 
 // 原型
-Route::get('prototype/upload', 'PrototypeController@uploadPage');
 Route::get('prototype', 'PrototypeController@index');
 Route::get('prototype/{category}', 'PrototypeController@prototypeList');
 Route::post('prototype/upload', 'PrototypeController@upload');

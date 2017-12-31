@@ -9,11 +9,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PrototypeController extends Controller
 {
-    public function uploadPage()
-    {
-        return view('prototype.upload');
-    }
-
     public function upload()
     {
         if (!$category_type = request()->get('category_type')) {
