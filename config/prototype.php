@@ -1,10 +1,14 @@
 <?php
 return [
     'categories' => [
-        'mxu'     => 'MXU-1.2',
-        'new-mxu' => 'MXU-1.3',
-        'new-m2o' => '新M2O'
+        'mxu'     => 'MXU-1.2系列',
+        'new-mxu' => 'MXU-1.3系列',
+        'new-m2o' => 'NEW-M2O系列'
     ],
     'path'       => env('PROTOTYPE_PATH'),
-    'host'     => env('PROTOTYPE_HOST'),
+    'host'       => env('PROTOTYPE_HOST'),
+    'types'      => [
+        'pdf'       => '需求文档',
+        'prototype' => '原型文档'
+    ]
 ];
