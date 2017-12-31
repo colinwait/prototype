@@ -29,7 +29,7 @@
                              href="/prototype/new-mxu">MXU-1.3系列</a></div>
     </div>
     <div class="search" @if( !isset($category)) style="display: none" @endif>
-        <form class="bs-example bs-example-form" role="form" method="get" action="/prototype/{{ $category }}">
+        <form class="bs-example bs-example-form" role="form" method="get" action="/prototype/{{ $category or '' }}">
             <div class="input-group">
                 <input type="text" class="form-control" name="search">
                 <span class="input-group-btn">
