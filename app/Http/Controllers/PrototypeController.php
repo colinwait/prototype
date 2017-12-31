@@ -70,6 +70,7 @@ class PrototypeController extends Controller
 
     public function prototypeList($category)
     {
+        $search         = request('search');
         $prototype_path = config('prototype.path');
         $dirs           = File::directories(rtrim($prototype_path, '/'));
         $lists          = [];
@@ -84,6 +85,9 @@ class PrototypeController extends Controller
             if (File::isDirectory($prototype_path . $dir . '/pdf')) {
                 $pdf_files = File::files($prototype_path . $dir . '/pdf');
                 foreach ($pdf_files as $pdf_file) {
+                    if ($search && !str_contains($pdf_file->getFilename(), $search)) {
+                        continue;
+                    }
                     $pdfs[$dir][] = [
                         'name'        => $pdf_file->getFilename(),
                         'url'         => config('prototype.host') . $dir . '/pdf/' . $pdf_file->getFilename(),
@@ -99,6 +103,9 @@ class PrototypeController extends Controller
                 }
                 $prototype = last(explode('/', $prototype));
                 if (in_array($prototype, ['__MACOSX', 'pdf'])) {
+                    continue;
+                }
+                if ($search && !str_contains($prototype, $search)) {
                     continue;
                 }
                 $lists[$dir][] = [
