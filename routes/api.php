@@ -15,3 +15,4 @@ use Illuminate\Http\Request;
 
 Route::get('/{id}', 'UserController@show');
 Route::get('/upload', 'TestController@upload');
+Route::delete('/prototype', 'PrototypeController@delete');

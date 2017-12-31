@@ -1,0 +1,271 @@
+. {
+    font-family: '微软雅黑';
+}
+
+#header {
+    margin-top: 8px;
+    max-width: 1280px;
+}
+
+#header .logo {
+    float: left;
+    width: 150px;
+    height: 52px;
+    color: #3C3C3C;
+}
+
+#header .logo .logo-name {
+    width: 100%;
+    height: 35px;
+    font-family: 'Candara Bold', 'Candara';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 29px;
+}
+
+#header .logo .logo-display {
+    width: 100%;
+    height: 17px;
+    font-size: 15px;
+}
+
+#header .p-nav {
+    float: left;
+    width: 600px;
+    height: 52px;
+    margin-left: 40px;
+}
+
+#header .p-nav a {
+    text-decoration: none;
+    color: #3C3C3C;
+}
+
+#header .p-nav a:hover {
+    color: #2a88bd;
+}
+
+#header .selected {
+    color: #2a88bd !important;
+}
+
+#header .memu {
+    float: left;
+    width: 100px;
+    height: 52px;
+    line-height: 52px;
+    margin-left: 50px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+}
+
+#index .brief {
+    float: left;
+    height: 484px;
+    width: 300px;
+    /*line-height: 484px;*/
+}
+
+#index .img {
+    float: right;
+    background: url("/images/prototype/home-bg.jpg");
+    background-size: 700px;
+    background-repeat: no-repeat;
+    height: 484px;
+    width: 700px;
+}
+
+#index .brief-p1 {
+    margin-top: 200px;
+    width: 400px;
+    height: 19px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 14px;
+    color: #0C5286;
+}
+
+#index .brief-p2 {
+    width: 400px;
+    height: 40px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 28px;
+    color: #333333;
+}
+
+#footer {
+    margin-top: 20px;
+}
+
+#footer .text {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    color: #D7D7D7;
+    font-size: 14px;
+}
+
+#list {
+    min-height: 444px;
+    margin-top: 40px;
+    max-width: 1200px;
+}
+
+#list .list-left {
+    width: 820px;
+    float: left;
+}
+
+#list .list-right {
+    width: 274px;
+    float: right;
+    position: fixed;
+    z-index: 100;
+    margin-left: 840px;
+}
+
+#list .list-right .list-up{
+    padding-top: 8px;
+    width: 100%;
+    background-color: rgba(242, 242, 242, 1);
+    height: 125px;
+    text-align: center;
+}
+
+#list .list-right .list-up .hit {
+    color: #108EE9;
+    width: 100%;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+#list .list-right .list-up .upload {
+    background-color: rgba(16, 142, 233, 1);
+    width: 80%;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+    margin: 10px auto;
+    color: whitesmoke;
+    border-radius: 3px;
+}
+
+#list .list-right .list-up .warn {
+    width: 100%;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+    margin: auto;
+    color: #F4AB2A;
+}
+
+#list .list-right .list-up .warn .warn-logo{
+    width: 16px;
+    background: url("/images/prototype/alert.png") no-repeat;
+    background-size: 16px 16px;
+    height: 18px;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+#list .list-right .list-down{
+    margin-top: 15px;
+    padding-top: 8px;
+    border-top: 2px solid;
+    border-color: rgba(12, 82, 134, 1);
+    width: 100%;
+    background-color: rgba(242, 242, 242, 1);
+    text-align: center;
+}
+
+#list .list-right .list-down .public{
+    width: 100%;
+    font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+    color: #108EE9;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px dotted rgba(204, 204, 204, 0.5);
+}
+
+#list .list-right .list-down .content{
+    width: 90%;
+    font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
+    text-align: left;
+    line-height: 30px;
+    margin: 3px auto;
+}
+
+#list .list-right .list-down .img{
+    width: 90%;
+    margin: auto;
+    padding-bottom: 10px;
+}
+
+#list .list-right .list-down .img img{
+    width: 100%;
+    margin: auto;
+
+}
+
+#list .prototype {
+    border-bottom: 1px solid rgba(204, 204, 204, .3);
+    width: 100%px;
+    padding-bottom: 20px;
+    margin-top: 20px;
+}
+
+#list .prototype .name {
+    font-weight: 700;
+    color: #666666;
+    font-size: 16px;
+}
+
+#list .prototype .time {
+    font-weight: 400;
+    color: #cccccc;
+    font-size: 12px;
+}
+
+#list .name a {
+    text-decoration: none;
+    color: #666666;
+}
+
+#list .name a:hover {
+    color: #2e6da4;
+}
+
+#myTab a {
+    color: #727272;
+}
+
+#list .delete {
+    display: none;
+    background: url("/images/prototype/delete.png");
+    background-size: 16px 16px;
+    width: 16px;
+    height: 16px;
+    float: right;
+    margin-right: 10px;
+}
+
+#myUpload input[type=file] {
+    height: 30px;
+    line-height: 30px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
