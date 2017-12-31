@@ -116,7 +116,13 @@ class PrototypeController extends Controller
             }
         }
         $lists = $lists[$category] ?? [];
+        $lists = collect($lists)->sortByDesc(function ($list, $key) {
+            return $list['update_time'];
+        })->values()->all();
         $pdfs  = $pdfs[$category] ?? [];
+        $pdfs  = collect($pdfs)->sortByDesc(function ($list, $key) {
+            return $list['update_time'];
+        })->values()->all();
 
         return view('prototype.list')->with(['lists' => $lists, 'pdfs' => $pdfs, 'category' => $category]);
     }
