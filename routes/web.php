@@ -12,6 +12,7 @@
 */
 
 Route::get('/', function () {
+    return redirect('/prototype');
     return view('welcome')->with(['users' => \App\User::all()]);
 });
 
