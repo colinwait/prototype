@@ -142,11 +142,14 @@ class PrototypeController extends Controller
 
     public function index()
     {
-        return view('prototype.index');
+        $categories = $this->categories;
+
+        return view('prototype.index', ['categories' => $categories]);
     }
 
     public function prototypeList($category)
     {
+        $categories = $this->categories;
         $search         = request('search');
         $prototype_path = $this->prototype_path;
         $dirs           = File::directories(rtrim($prototype_path, '/'));
@@ -201,7 +204,7 @@ class PrototypeController extends Controller
             return $list['update_time'];
         })->values()->all();
 
-        return view('prototype.list')->with(['lists' => $lists, 'pdfs' => $pdfs, 'category' => $category]);
+        return view('prototype.list')->with(['lists' => $lists, 'pdfs' => $pdfs, 'category' => $category, 'categories' => $categories]);
     }
 
     public function delete()
