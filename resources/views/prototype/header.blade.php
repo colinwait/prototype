@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="{{ asset('css/prototype/common.css') }}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{ asset('/images/prototype/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('/images/prototype/favicon.ico') }}"/>
     @yield('styles')
 </head>
 <body>
@@ -26,17 +26,12 @@
             <div class="memu"><a class="{{ isset($category) && $category  == $index ? 'selected' : '' }}"
                                  href="/prototype/{{ $index }}">{{ $_category }}</a></div>
         @endforeach
-        {{--<div class="memu"><a class="{{ isset($category) && $category  == 'new-m2o' ? 'selected' : '' }}"--}}
-                             {{--href="/prototype/new-m2o">M2O-NEW系列</a></div>--}}
-        {{--<div class="memu"><a class="{{isset($category) &&  $category == 'mxu' ? 'selected': '' }}"--}}
-                             {{--href="/prototype/mxu">MXU-1.2系列</a></div>--}}
-        {{--<div class="memu"><a class="{{isset($category) &&  $category == 'new-mxu' ? 'selected': '' }}"--}}
-                             {{--href="/prototype/new-mxu">MXU-1.3系列</a></div>--}}
     </div>
     <div class="search" @if( !isset($category)) style="display: none" @endif>
         <form class="bs-example bs-example-form" role="form" method="get" action="/prototype/{{ $category or '' }}">
             <div class="input-group">
-                <input type="text" class="form-control" name="search">
+                <input type="text" class="form-control" name="search" placeholder="搜索{{ $types[$current_type] ?? ''}}">
+                <input type="hidden" class="form-control" name="type" value="{{ $current_type ?? ''}}">
                 <span class="input-group-btn">
 						<button class="btn btn-default" type="submit">
 						</button>

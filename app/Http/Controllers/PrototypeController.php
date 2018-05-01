@@ -19,12 +19,15 @@ class PrototypeController extends Controller
 
     private $prototype_host;
 
+    private $file_types;
+
     public function __construct()
     {
         $this->prototype_path = config('prototype.path');
         $this->types          = config('prototype.types');
         $this->categories     = config('prototype.categories');
         $this->prototype_host = config('prototype.host');
+        $this->file_types     = config('prototype.file_types');
     }
 
     public function upload()
@@ -35,67 +38,50 @@ class PrototypeController extends Controller
         if (!$files = request()->file('file')) {
             return redirect('/prototype/' . $category_type);
         }
-        $pdfs = $prototypes = [];
+        $type           = request()->get('type');
+        $uploaded_files = [];
         foreach ($files as $file) {
             $extension = $file->extension();
-            if (!in_array($extension, ['zip', 'pdf'])) {
+            if (!in_array($extension, $this->file_types)) {
                 return redirect('/prototype/' . $category_type);
             }
             if ($extension == 'zip') {
-                $res          = $this->uploadZip($file);
-                $prototypes[] = $res['filename'];
-            } elseif ($extension == 'pdf') {
-                $res    = $this->uploadPdf($file);
-                $pdfs[] = $res['filename'];
+                $res = $this->uploadZip($file);
+            } else {
+                $res = $this->uploadFile($file);
             }
+            $uploaded_files[] = $res['filename'];
         }
 
-        $this->handleEvent($category_type, $prototypes, $pdfs);
+        $this->handleEvent($category_type, $type, $uploaded_files);
 
-        return redirect('/prototype/' . $category_type);
+        return redirect('/prototype/' . $category_type . '?type=' . $type);
     }
 
-    private function handleEvent($category_type, $prototypes, $pdfs)
+    private function handleEvent($category_type, $type, $files)
     {
-        $create_content   = '';
-        $update_content   = '';
-        $create_prototype = $create_pdf = [];
-        $update_prototype = $update_pdf = [];
-        $pdf_links        = $prototype_links = [];
-        foreach ($prototypes as $prototype) {
-            if (File::exists($this->prototype_path . $category_type . '/' . $prototype)) {
-                $update_prototype[] = $prototype;
+        $create_content = '';
+        $update_content = '';
+        $create_file    = $update_file = [];
+        $file_links     = [];
+        foreach ($files as $file) {
+            if (File::exists($this->prototype_path . $category_type . '/' . $type . '/' . $file)) {
+                $update_file[] = $file;
             } else {
-                $create_prototype[] = $prototype;
+                $create_file[] = $file;
             }
-            $prototype_links[] = [
-                'name' => $prototype,
-                'url'  => $this->prototype_host . $category_type . '/' . $prototype,
+            $file_links[] = [
+                'name' => $file,
+                'url'  => $this->prototype_host . $category_type . '/' . $type . '/' . $file,
             ];
         }
-        foreach ($pdfs as $pdf) {
-            if (File::exists($this->prototype_path . $category_type . '/pdf/' . $pdf . '.pdf')) {
-                $update_pdf[] = $pdf;
-            } else {
-                $create_pdf[] = $pdf;
-            }
-            $pdf_links[] = [
-                'name' => $pdf,
-                'url'  => $this->prototype_host . $category_type . '/pdf/' . $pdf . '.pdf',
-            ];
+        event(new WebhookEvent($category_type, $type, $file_links));
+        $type_name = $this->types[$type];
+        if (!empty($create_file)) {
+            $create_content .= '新增了' . $type_name . '：' . implode('、', $create_file) . PHP_EOL;
         }
-        event(new WebhookEvent($category_type, $prototype_links, $pdf_links));
-        if (!empty($create_prototype)) {
-            $create_content .= '新增了原型：' . implode('、', $create_prototype) . PHP_EOL;
-        }
-        if (!empty($update_prototype)) {
-            $update_content .= '更新了原型：' . implode('、', $update_prototype) . PHP_EOL;
-        }
-        if (!empty($create_pdf)) {
-            $create_content .= '新增了需求文档：' . implode('、', $create_pdf) . PHP_EOL;
-        }
-        if (!empty($update_pdf)) {
-            $update_content .= '更新了需求文档：' . implode('、', $update_pdf) . PHP_EOL;
+        if (!empty($update_file)) {
+            $update_content .= '更新了' . $type_name . '：' . implode('、', $update_file) . PHP_EOL;
         }
         if ($create_content) {
             event(new LogEvent('create', trim($create_content)));
@@ -105,34 +91,39 @@ class PrototypeController extends Controller
         }
     }
 
-    private function uploadPdf(UploadedFile $file)
+    private function uploadFile(UploadedFile $file)
     {
         $category_type = request()->get('category_type');
-        $pdf_path      = $this->prototype_path . $category_type . '/pdf/';
-        $filename      = $file->getClientOriginalName();
-        $file->move($pdf_path, $filename);
+        $type          = request()->get('type');
+        $file_path     = $this->prototype_path . $category_type . '/' . $type . '/';
+        if (!is_dir($file_path)) {
+            mkdir($file_path, 0755, 1);
+        }
+        $filename = $file->getClientOriginalName();
+        $file->move($file_path, $filename);
 
         return ['filename' => rtrim($filename, '.pdf')];
     }
 
     private function uploadZip(UploadedFile $file)
     {
-        $category_type      = request()->get('category_type');
-        $filename           = $file->getClientOriginalName();
-        $prototype_zip_path = $this->prototype_path . 'zips/';
-        $prototype_path     = $this->prototype_path . $category_type . '/';
-        $file_path          = $prototype_zip_path . $filename;
-        if (!is_dir($prototype_zip_path)) {
-            mkdir($prototype_zip_path, 0755, 1);
+        $type          = request()->get('type');
+        $category_type = request()->get('category_type');
+        $filename      = $file->getClientOriginalName();
+        $zip_file_path = $this->prototype_path . 'zips/';
+        $file_path     = $this->prototype_path . $category_type . '/' . $type . '/';
+        if (!is_dir($file_path)) {
+            mkdir($file_path, 0777, 1);
         }
-        if (!is_dir($prototype_path)) {
-            mkdir($prototype_path, 0755, 1);
+        $zip_file = $zip_file_path . $filename;
+        if (!is_dir($zip_file_path)) {
+            mkdir($zip_file_path, 0755, 1);
         }
-        $file->move($prototype_zip_path, $filename);
+        $file->move($zip_file_path, $filename);
         $zip = new \ZipArchive();
-        $res = $zip->open($file_path);
+        $res = $zip->open($zip_file);
         if ($res === true) {
-            $zip->extractTo($prototype_path);
+            $zip->extractTo($file_path);
             $zip->close();
         } else {
             return ['filename' => ''];
@@ -142,69 +133,76 @@ class PrototypeController extends Controller
 
     public function index()
     {
-        $categories = $this->categories;
+        $categories   = $this->categories;
+        $types        = $this->types;
+        $current_type = request()->get('type');
 
-        return view('prototype.index', ['categories' => $categories]);
+        return view('prototype.index', ['categories' => $categories, 'types' => $types, 'current_type' => $current_type]);
     }
 
     public function prototypeList($category)
     {
-        $categories = $this->categories;
+        $page           = intval(request('page')) ?: 1;
+        $per_num        = intval(request('per_page')) ?: 1000;
+        $categories     = $this->categories;
         $search         = request('search');
+        $current_type   = request('type') ?: current(array_keys($this->types));
         $prototype_path = $this->prototype_path;
-        $dirs           = File::directories(rtrim($prototype_path, '/'));
-        $lists          = [];
-        $pdfs           = [];
-        foreach ($dirs as $dir) {
-            $dir = last(explode('/', $dir));
-            if ($dir == 'zips') {
-                continue;
-            }
-            $prototypes = File::directories($prototype_path . $dir);
-            $pdfs[$dir] = [];
-            if (File::isDirectory($prototype_path . $dir . '/pdf')) {
-                $pdf_files = File::files($prototype_path . $dir . '/pdf');
-                foreach ($pdf_files as $pdf_file) {
-                    if ($search && !str_contains($pdf_file->getFilename(), $search)) {
+        $dir            = $category;
+        $files[$dir]    = [];
+        $types          = $this->types;
+        foreach ($types as $type => $type_name) {
+            $files[$dir][$type] = [];
+            $type_dir           = $prototype_path . $dir . '/' . $type;
+            if (File::isDirectory($type_dir)) {
+                // 扫描所有目录下文件，目录
+                $type_files = array_values(array_diff(scandir($type_dir), ['.', '..']));
+                foreach ($type_files as $type_file) {
+                    $file = $type_dir . '/' . $type_file;
+                    if (is_dir($file)) {
+                        // 目录
+                        if (File::exists($file . '/index.html')) {
+                            $last_modified_time = FIle::lastModified($file . '/index.html');
+                        } else {
+                            // 原型不存在index
+                            continue;
+                        }
+                        $prototype = last(explode('/', $type_file));
+                        if (in_array($prototype, ['__MACOSX', 'pdf'])) {
+                            continue;
+                        }
+                    } else {
+                        $last_modified_time = File::lastModified($file);
+                    }
+                    // 文件
+                    if ($search && !str_contains($type_file, $search)) {
                         continue;
                     }
-                    $pdfs[$dir][] = [
-                        'name'        => $pdf_file->getFilename(),
-                        'url'         => $this->prototype_host . $dir . '/pdf/' . $pdf_file->getFilename(),
-                        'update_time' => date('Y-m-d H:i', intval($pdf_file->getMTime())),
+                    $files[$dir][$type][] = [
+                        'name'        => $type_file,
+                        'url'         => $this->prototype_host . $dir . '/' . $type . '/' . $type_file,
+                        'update_time' => date('Y-m-d H:i', intval($last_modified_time)),
                     ];
                 }
-            }
-            $lists[$dir] = [];
-            foreach ($prototypes as $prototype) {
-                $last_modified_time = '';
-                if (File::exists($prototype . '/index.html')) {
-                    $last_modified_time = FIle::lastModified($prototype . '/index.html');
+                if (isset($files[$dir][$type])) {
+                    $files[$dir][$type] = collect($files[$dir][$type])->sortByDesc(function ($list, $key) {
+                        return $list['update_time'];
+                    })->values()->forPage($page, $per_num)->toArray();
                 }
-                $prototype = last(explode('/', $prototype));
-                if (in_array($prototype, ['__MACOSX', 'pdf'])) {
-                    continue;
-                }
-                if ($search && !str_contains($prototype, $search)) {
-                    continue;
-                }
-                $lists[$dir][] = [
-                    'name'        => $prototype,
-                    'url'         => $this->prototype_host . $dir . '/' . $prototype,
-                    'update_time' => date('Y-m-d H:i', intval($last_modified_time)),
-                ];
             }
         }
-        $lists = $lists[$category] ?? [];
-        $lists = collect($lists)->sortByDesc(function ($list, $key) {
-            return $list['update_time'];
-        })->values()->all();
-        $pdfs  = $pdfs[$category] ?? [];
-        $pdfs  = collect($pdfs)->sortByDesc(function ($list, $key) {
-            return $list['update_time'];
-        })->values()->all();
 
-        return view('prototype.list')->with(['lists' => $lists, 'pdfs' => $pdfs, 'category' => $category, 'categories' => $categories]);
+        return view('prototype.list')->with(
+            [
+                'files'        => $files,
+                'types'        => $types,
+                'current_type' => $current_type,
+                'category'     => $category,
+                'categories'   => $categories,
+                'page'         => $page,
+                'per_num'      => $per_num
+            ]
+        );
     }
 
     public function delete()
@@ -212,20 +210,13 @@ class PrototypeController extends Controller
         $type      = request('type');
         $category  = request('category');
         $filename  = request('filename');
-        $file_type = '其他';
-        if ($type == 'pdf') {
-            $path = $this->prototype_path . $category . '/pdf/' . $filename;
-            if (FIle::exists($path)) {
-                File::delete($path);
-            }
-            $filename  = rtrim($filename, '.pdf');
-            $file_type = '需求文档';
-        } elseif ($type == 'prototype') {
-            $path = $this->prototype_path . $category . '/' . $filename;
-            if (File::isDirectory($path)) {
-                File::deleteDirectory($path);
-            }
-            $file_type = '原型文档';
+        $path      = $this->prototype_path . $category . '/' . $type . '/' . $filename;
+        $file_type = $this->types[$type];
+        if (FIle::exists($path)) {
+            File::delete($path);
+        }
+        if (File::isDirectory($path)) {
+            File::deleteDirectory($path);
         }
         event(new LogEvent('delete', '删除了' . $file_type . ' : ' . $filename));
 

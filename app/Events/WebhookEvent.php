@@ -14,22 +14,22 @@ class WebhookEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $pdf_links;
-
-    public $prototype_links;
+    public $file_links;
 
     public $category;
+
+    public $type;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($category, $prototype_links, $pdf_links)
+    public function __construct($category, $type, $file_links)
     {
-        $this->category        = $category;
-        $this->pdf_links       = $pdf_links;
-        $this->prototype_links = $prototype_links;
+        $this->category   = $category;
+        $this->type       = $type;
+        $this->file_links = $file_links;
     }
 
     /**

@@ -4,37 +4,32 @@
     <div id="list" class="container">
         <div class="list-left">
             <ul id="myTab" class="nav nav-tabs">
-                <li class="active"><a href="#prototype" data-toggle="tab">公开原型</a></li>
-                <li><a href="#pdf" data-toggle="tab">公开文档</a></li>
+                @foreach($types as $type => $type_name)
+                    <li @if($type == $current_type) class="active" @endif><a
+                                href="{{$category}}?type={{$type}}">{{$type_name}}</a></li>
+                @endforeach
             </ul>
             <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade in active" id="prototype">
-                    @foreach($lists as $list)
-                        <div class="prototype">
-                            <div class="name"><a href="{{ $list['url'] }}"
-                                                 target="_blank">{{ $list['name'] }}</a></div>
-                            <div class="time">更新于 {{ $list['update_time'] }}<span class="delete"
-                                                                                  onclick="modal(this, 'prototype', '{{ $list['name'] }}')"></span>
+                @foreach($types as $type => $type_name)
+                    <div @if($type == $current_type) class="tab-pane fade in active" @else class="tab-pane fade"
+                         @endif id="{{ $type }}">
+                        @foreach($files[$category][$type] as $list)
+                            <div class="prototype">
+                                <div class="name"><a href="{{ $list['url'] }}"
+                                                     target="_blank">{{ $list['name'] }}</a></div>
+                                <div class="time">更新于 {{ $list['update_time'] }}<span class="delete"
+                                                                                      onclick="modal(this, '{{ $type }}', '{{ $list['name'] }}')"></span>
+                                </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="tab-pane fade" id="pdf">
-                    @foreach($pdfs as $pdf)
-                        <div class="prototype">
-                            <div class="name"><a href="{{ $pdf['url'] }}" target="_blank">{{ $pdf['name'] }}</a></div>
-                            <div class="time">更新于 {{ $pdf['update_time'] }}<span class="delete"
-                                                                                 onclick="modal(this, 'pdf', '{{ $pdf['name'] }}')"></span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @endforeach
             </div>
         </div>
         <div class="list-right">
             <div class="list-up">
                 <div class="hit">产品经理会悄悄通过这个按钮传新原型</div>
-                <div class="upload" onclick="upload()">上传</div>
+                <div class="upload" onclick="upload()">上传{{ $types[$current_type] }}</div>
                 <div class="warn"><span class="warn-logo"></span>权限开放~维护靠大家</div>
             </div>
             <div class="list-down">
@@ -80,10 +75,11 @@
                         {{ csrf_field() }}
                         <input type="file" name="file[]" multiple="multiple">
                         <input type="hidden" name="category_type" value="{{ $category or '' }}">
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary btn-confirm">确定</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    </div>
+                        <input type="hidden" name="type" value="{{ $current_type or '' }}">
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-confirm">确定</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        </div>
                     </form>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal -->
@@ -129,8 +125,7 @@
             $("#myModal").modal('show');
         }
 
-        function upload()
-        {
+        function upload() {
             $("#myUpload").modal('show');
         }
     </script>
