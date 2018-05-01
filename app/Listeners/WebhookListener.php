@@ -31,6 +31,7 @@ class WebhookListener
     public function handle(WebhookEvent $event)
     {
         $webhook       = config('webhook.cat');
+        $m2o_webhook   = config('webhook.m2o');
         $file_links    = $event->file_links;
         $type          = $event->type;
         $categories    = $this->prototype['categories'];
@@ -53,5 +54,7 @@ class WebhookListener
         ];
         $d_webhook = new DingDingWebhook();
         $d_webhook->send($webhook, 'markdown', $data);
+        $data['isAtAll'] = false;
+        $d_webhook->send($m2o_webhook, 'markdown', $data);
     }
 }
