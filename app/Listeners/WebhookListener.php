@@ -26,12 +26,10 @@ class WebhookListener
      *
      * @param  object $event
      *
-     * @return void
+     * @return bool
      */
     public function handle(WebhookEvent $event)
     {
-        $webhook       = config('webhook.cat');
-        $m2o_webhook   = config('webhook.m2o');
         $file_links    = $event->file_links;
         $type          = $event->type;
         $categories    = $this->prototype['categories'];
@@ -45,16 +43,55 @@ class WebhookListener
                 $text .= "\n> [{$file_link['name']}]({$file_link['url']})";
             }
         }
-        $data      = [
+        if (!$config = $this->getWebhookConfig($event->category)) {
+            return false;
+        }
+
+        if (isset($config[0])) {
+            foreach ($config as $item) {
+                $this->sendByConfig($item, $category_name, $type_name, $text);
+            }
+        } else {
+            $this->sendByConfig($config, $category_name, $type_name, $text);
+        }
+    }
+
+    private function sendByConfig($config, $category_name, $type_name, $text)
+    {
+        $default_data = [
             'title'   => "{$category_name} {$type_name}更新啦~",
             'text'    => "### {$category_name} {$type_name}更新啦~ \n " .
-                "> ![screenshot](https://cdn.duitang.com/uploads/item/201501/02/20150102103220_smsCY.gif)\n" .
-                "> 前方高能！产品汪又更新原型/文档了！赶紧看看TA给你挖了什么坑(•̀ω•́)✧ 如果找不到更新，清一下缓存~" . $text,
+                "> ![screenshot]({{IMG}})\n" .
+                "> {{TEXT}}" . $text,
             'isAtAll' => true,
         ];
-        $d_webhook = new DingDingWebhook();
-        $d_webhook->send($webhook, 'markdown', $data);
-        $data['isAtAll'] = false;
-        $d_webhook->send($m2o_webhook, 'markdown', $data);
+        $default_img  = 'https://cdn.duitang.com/uploads/item/201501/02/20150102103220_smsCY.gif';
+        $default_text = '前方高能！产品汪又更新原型/文档了！赶紧看看TA给你挖了什么坑(•̀ω•́)✧ 如果找不到更新，清一下缓存~';
+        $webhook      = array_get($config, 'webhook', '');
+        $data         = isset($config['data']) && $config['data'] ? $config['data'] : $default_data;
+        $type         = array_get($config, 'type', 'markdown');
+        $img          = isset($config['img']) && $config['img'] ? $config['img'] : $default_img;
+        $context      = isset($config['text']) && $config['text'] ? $config['text'] : $default_text;
+        if (!$webhook || !$data || !$type) {
+            return false;
+        }
+        if (isset($data['text'])) {
+            $data['text'] = strtr($data['text'], [
+                '{{IMG}}'  => $img,
+                '{{TEXT}}' => $context
+            ]);
+        }
+        $data            = $data ?: [];
+        $data['isAtAll'] = array_get($config, 'isAtAll', false);
+        $d_webhook       = new DingDingWebhook();
+//        dd($webhook, $type, $data);
+        $d_webhook->send($webhook, $type, $data);
+    }
+
+    private function getWebhookConfig($category)
+    {
+        $configs = config('prototype.dd_webhook');
+
+        return $configs[$category] ?? false;
     }
 }

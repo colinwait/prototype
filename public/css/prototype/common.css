@@ -70,7 +70,7 @@
     padding-top: 15px;
 }
 
-#header .search .btn{
+#header .search .btn {
     background: url("/images/prototype/search.png") no-repeat;
     background-position: center;
     background-size: 22px 22px;
@@ -141,12 +141,16 @@
 #list .list-right {
     width: 274px;
     float: right;
-    position: fixed;
     z-index: 100;
-    margin-left: 840px;
 }
 
-#list .list-right .list-up{
+#list .list-right-fixed {
+    position: fixed;
+    margin-left: 866px;
+    top: 0;
+}
+
+#list .list-right .list-up {
     padding-top: 8px;
     width: 100%;
     background-color: rgba(242, 242, 242, 1);
@@ -188,7 +192,7 @@
     color: #F4AB2A;
 }
 
-#list .list-right .list-up .warn .warn-logo{
+#list .list-right .list-up .warn .warn-logo {
     width: 16px;
     background: url("/images/prototype/alert.png") no-repeat;
     background-size: 16px 16px;
@@ -198,7 +202,7 @@
     vertical-align: middle;
 }
 
-#list .list-right .list-down{
+#list .list-right .list-down {
     margin-top: 15px;
     padding-top: 8px;
     border-top: 2px solid;
@@ -208,7 +212,7 @@
     text-align: center;
 }
 
-#list .list-right .list-down .public{
+#list .list-right .list-down .public {
     width: 100%;
     font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
     font-weight: 700;
@@ -221,7 +225,7 @@
     border-bottom: 1px dotted rgba(204, 204, 204, 0.5);
 }
 
-#list .list-right .list-down .content{
+#list .list-right .list-down .content {
     width: 90%;
     font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
     text-align: left;
@@ -229,13 +233,13 @@
     margin: 3px auto;
 }
 
-#list .list-right .list-down .img{
+#list .list-right .list-down .img {
     width: 90%;
     margin: auto;
     padding-bottom: 10px;
 }
 
-#list .list-right .list-down .img img{
+#list .list-right .list-down .img img {
     width: 100%;
     margin: auto;
 
@@ -243,7 +247,7 @@
 
 #list .prototype {
     border-bottom: 1px solid rgba(204, 204, 204, .3);
-    width: 100%px;
+    width: 100% px;
     padding-bottom: 20px;
     margin-top: 20px;
 }
