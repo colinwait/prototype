@@ -102,7 +102,7 @@ class PrototypeController extends Controller
         $filename = $file->getClientOriginalName();
         $file->move($file_path, $filename);
 
-        return ['filename' => rtrim($filename, '.pdf')];
+        return ['filename' => $filename];
     }
 
     private function uploadZip(UploadedFile $file)
