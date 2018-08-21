@@ -45,7 +45,7 @@ class PrototypeController extends Controller
             if (!in_array($extension, $this->file_types)) {
                 return redirect('/prototype/' . $category_type);
             }
-            if ($extension == 'zip') {
+            if ($extension == 'zip' && $type != 'docs') {
                 $res = $this->uploadZip($file);
             } else {
                 $res = $this->uploadFile($file);

@@ -35,9 +35,9 @@
             <div class="list-down">
                 <div class="public">公告栏</div>
                 <div class="content">
-                    <p>各位宝贝~新年快乐啊~</p>
-                    <p>产品经理露出了和善的微笑…</p>
-                    <p>这个平台吼不吼哇~</p>
+                    <p>平台开放中，欢迎提意见~</p>
+                    <p>有任何产品上的建议可以 @徐焱茹…</p>
+                    <p>有任何功能上的bug，请 @卢杨~</p>
                 </div>
                 <div class="img"><img src="{{ asset('/images/prototype/public.png') }}"></div>
             </div>
