@@ -36,8 +36,8 @@
                 <div class="public">公告栏</div>
                 <div class="content">
                     <p>平台开放中&nbsp&nbsp欢迎提意见~</p>
-                    <p>有任何产品上的建议可以 @徐焱茹~</p>
-                    <p>bug或增加钉钉机器人推送 @卢杨~</p>
+{{--                    <p>有任何产品上的建议可以 @徐焱茹~</p>--}}
+{{--                    <p>bug或增加钉钉机器人推送 @卢杨~</p>--}}
                 </div>
                 <div class="img"><img src="{{ asset('/images/prototype/public.png') }}"></div>
             </div>

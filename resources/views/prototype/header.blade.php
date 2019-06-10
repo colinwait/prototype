@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="{{ asset('css/prototype/common.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/prototype/animate.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('/images/prototype/favicon.ico') }}"/>
     @yield('styles')
 </head>
@@ -42,11 +43,43 @@
 </div>
 @yield('content')
 
+<div class="container schnappi_container clearfix">
+    @foreach($schnappis as $schnappi)
+        <div class="well-item">
+            <div class="correct"><img class="" src="/{{ $schnappi }}"/></div>
+            <div class="opposite">
+                <div class="">
+                    <div class="opposite-content">
+                        <img class="" src="/{{ $schnappi }}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+</div>
 
 <div id="footer">
     <div class="text text-center">Design by yuffie & colin</div>
     <div class="text text-center">2018 hogesoft</div>
 </div>
 @yield('scripts')
+<script>
+    $(function () {
+        $(".well-item").hover(function () {
+            $(this).find(".correct").children().removeClass();
+            $(this).find(".opposite").children().removeClass();
+            $(this).find(".correct").children().addClass("test");
+            $(this).find(".opposite").children().addClass('test2');
+            $(this).find(".opposite").find('img').addClass('rotate180');
+        }, function () {
+            $(this).find(".correct").children().removeClass();
+            $(this).find(".opposite").children().removeClass();
+            $(this).find(".correct").children().addClass("test2");
+            $(this).find(".opposite").children().addClass('test');
+            $(this).find(".opposite").find('img').addClass('rotate180');
+        });
+    });
+</script>
+
 </body>
 </html>

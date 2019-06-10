@@ -293,3 +293,21 @@
     margin-top: 10px;
     margin-left: 20px;
 }
+
+.schnappi {
+    width: 65px;
+    height: 65px;
+    border-radius: 32px;
+}
+
+.schnappi-back {
+    display: block;
+    width: 65px;
+    height: 65px;
+    border-radius: 32px;
+    background-color: #aed2d9;
+}
+
+.schnappi_container {
+    margin-top: 20px;
+}
